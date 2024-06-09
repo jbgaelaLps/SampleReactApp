@@ -19,8 +19,8 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Ensure permissions for the unprivileged user
-RUN chown -R nginx:nginx /usr/share/nginx/html
+# No need to change ownership as we are using unprivileged Nginx which already handles permissions properly
+# USER nginx
 
 EXPOSE 8080
 
