@@ -12,19 +12,16 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Run
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:bookworm-perl
 
-# Create necessary directories and set correct permissions
-RUN mkdir -p /var/cache/nginx/client_temp \
-    && chown -R nginx:nginx /var/cache/nginx
-
+# Copy the built files from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Ensure that the container runs with the root user to avoid permission issues
-USER root
+# Ensure permissions for the unprivileged user
+RUN chown -R nginx:nginx /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["nginx", "-g", "daemon off;"]
